@@ -37,11 +37,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 
-public class CreateNoteActivity extends AppCompatActivity implements NoteRepository {
+public class CreateNoteActivity extends AppCompatActivity {
     ImageButton calendarButton;
     Calendar calendar;
     DatePickerDialog dialog;
@@ -52,8 +53,11 @@ public class CreateNoteActivity extends AppCompatActivity implements NoteReposit
     Button saveButton;
     int id;
 
-    SharedPreferences numberPreferences;
-    public int numberOfNotes;
+    Intent intentWithNoteData;
+    String idS;
+    boolean isBeingFixed = false;
+
+    HashMap<Integer, String> map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,46 +68,52 @@ public class CreateNoteActivity extends AppCompatActivity implements NoteReposit
     }
 
     private void getNoteDate() {
-        Intent intent = this.getIntent();
-        int id = intent.getIntExtra(AllSharedPreferences.NOTE_ID, -1);
+        intentWithNoteData = this.getIntent();
         BufferedReader bufferedReader = null;
+        if (intentWithNoteData != null) {
+            map = (HashMap<Integer, String>) intentWithNoteData.getSerializableExtra(Integer.toString(AllSharedPreferences.NOTE_IN_QUEUE));
+            if (map != null) {
+                idS = map.get(AllSharedPreferences.NOTE_IN_QUEUE);
+                try {
+                    bufferedReader = new BufferedReader(new InputStreamReader(openFileInput(idS)));
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
 
-        try {
-            bufferedReader = new BufferedReader(new InputStreamReader(openFileInput(id + ".txt")));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+                if (bufferedReader != null) {
+                    isBeingFixed = true;
+                    JsonParser jsonParser = new JsonParser();
+                    JsonObject noteJson = (JsonObject) jsonParser.parse(bufferedReader);
 
-        if (bufferedReader != null) {
-            JsonParser jsonParser = new JsonParser();
-            JsonObject noteJson = (JsonObject) jsonParser.parse(bufferedReader);
+                    EditText headline = findViewById(R.id.headline);
+                    headline.setText(noteJson.get("headline").getAsString());
 
-            EditText headline = findViewById(R.id.headline);
-            headline.setText(noteJson.get("headline").getAsString());
+                    EditText body = findViewById(R.id.note_body);
+                    body.setText(noteJson.get("body").getAsString());
 
-            EditText body = findViewById(R.id.note_body);
-            body.setText(noteJson.get("body").getAsString());
+                    CheckBox hasDeadline = findViewById(R.id.has_deadline);
+                    hasDeadline.setChecked(noteJson.get("hasDeadline").getAsBoolean());
 
-            CheckBox hasDeadline = findViewById(R.id.has_deadline);
-            hasDeadline.setChecked(noteJson.get("hasDeadline").getAsBoolean());
+                    EditText date = findViewById(R.id.date);
+                    EditText time = findViewById(R.id.time);
 
-            EditText date = findViewById(R.id.date);
-            EditText time = findViewById(R.id.time);
-
-            if (hasDeadline.isChecked()) {
-                date.setText(noteJson.get("date").getAsString());
-                time.setText(noteJson.get("time").getAsString());
-            }
+                    if (hasDeadline.isChecked()) {
+                        date.setText(noteJson.get("date").getAsString());
+                        time.setText(noteJson.get("time").getAsString());
+                    }
 
             try {
                 bufferedReader.close();
             } catch (IOException ex) {
                 ex.printStackTrace();
-            }
+            }}
         }
-    }
+    }}
 
     public void init() {
+        Random random = new Random();
+        id = random.nextInt();
+
         createToolbar();
 
         dateAndTime = findViewById(R.id.date);
@@ -139,12 +149,30 @@ public class CreateNoteActivity extends AppCompatActivity implements NoteReposit
             public void onClick(View view) {
                 try {
                     note = createNote();
+                    // MyRepository.getNoteRepository().saveNote(note);
                     saveNote(note);
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
+    }
+
+    public void saveNote(Note note) throws IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(note);
+        BufferedWriter bufferedWriter;
+        if (!isBeingFixed)
+        {bufferedWriter = new BufferedWriter(new OutputStreamWriter(openFileOutput((id /*note.getId()*/ + ".txt"), MODE_PRIVATE)));} //fix!!
+        else
+        {bufferedWriter = new BufferedWriter(new OutputStreamWriter(openFileOutput((idS), MODE_PRIVATE)));}
+        bufferedWriter.append(json);
+        bufferedWriter.close();
+
+        Toast.makeText(CreateNoteActivity.this, "Заметка сохранена)", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(CreateNoteActivity.this, NotesActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -155,12 +183,8 @@ public class CreateNoteActivity extends AppCompatActivity implements NoteReposit
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int id =1;
-        try {
-            deleteById(id);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        String fileName = map.get(AllSharedPreferences.NOTE_IN_QUEUE);
+        deleteByFileName(fileName);
         return true;
     }
 
@@ -178,7 +202,6 @@ public class CreateNoteActivity extends AppCompatActivity implements NoteReposit
     }
 
     public Note createNote() {
-        id = getNoteMaxId();
         EditText headline = findViewById(R.id.headline);
         EditText noteBody = findViewById(R.id.note_body);
         String date;
@@ -195,57 +218,18 @@ public class CreateNoteActivity extends AppCompatActivity implements NoteReposit
         return new Note(id, headline.getText().toString(), noteBody.getText().toString(), hasDeadlineCB.isChecked(), date, time);
     }
 
-    private int getNoteMaxId() {
-        numberPreferences = getSharedPreferences(AllSharedPreferences.NOTE_NUMBER_PREFS, MODE_PRIVATE);
-        numberOfNotes = numberPreferences.getInt(AllSharedPreferences.NOTE_NUMBER, 1);
-        return numberOfNotes;
-    }
-
-    @Override
-    public Note getNoteById(String id) {
-        return null;
-    }
-
-    @Override
-    public List<Note> getNotes() {
-        return null;
-    }
-
-    @Override
-    public void saveNote(Note note) throws IOException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(note);
-        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(openFileOutput((note.getId() + ".txt"), MODE_PRIVATE)));
-        bufferedWriter.append(json);
-        bufferedWriter.close();
-
-        SharedPreferences.Editor editor = numberPreferences.edit();
-        editor.putInt(AllSharedPreferences.NOTE_NUMBER, id + 1).apply();
-
-        Toast.makeText(this, "Заметка сохранена)", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(CreateNoteActivity.this, NotesActivity.class);
-        startActivity(intent);
-    }
-
-    @Override
-    public void deleteById(int id) throws FileNotFoundException {
-        File file = new File(getFilesDir(), (id + ".txt"));
+    // @Override
+    public void deleteByFileName(String fileName)  {
+        File file = new File(getFilesDir(), fileName);
         file.delete();
         Intent intent = new Intent(CreateNoteActivity.this, NotesActivity.class);
         startActivity(intent);
-}
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 }
+
 
 /*исправить:
 0.смещение заметок при удалении (id)
 1.очищение пустых заметок или заметок из пробелов
 2.отменить наложение даты и времени
-3.вид cardView
-4.создать отдельный класс со статическими переменными и переменными sharedPreferences
-5.
  */

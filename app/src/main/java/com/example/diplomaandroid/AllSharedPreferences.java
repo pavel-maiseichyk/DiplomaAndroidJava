@@ -9,6 +9,8 @@ public class AllSharedPreferences {
 
     final static String NOTE_ID = "note_id";
 
+    static int NOTE_IN_QUEUE = 0;
+
     public static final String FIRST_TIME = "first-time";
     public static final String FIRST_TIME_PREFS = "first-time prefs";
 }

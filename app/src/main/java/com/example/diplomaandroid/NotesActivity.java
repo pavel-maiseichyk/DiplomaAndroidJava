@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -39,6 +40,7 @@ public class NotesActivity extends AppCompatActivity {
     ListView listView;
     ArrayList<Note> list;
 
+    HashMap<Integer, String> map;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,12 +48,12 @@ public class NotesActivity extends AppCompatActivity {
 
         try {
             init();
-        } catch (IOException | JSONException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void init() throws IOException, JSONException {
+    public void init() throws IOException {
         createToolbar();
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -62,10 +64,12 @@ public class NotesActivity extends AppCompatActivity {
             }
         });
 
+        map = new HashMap<>();
+
         list = getNoteList();
 
         listView = findViewById(R.id.notes_listView);
-        NoteAdapter adapter = new NoteAdapter(this, list);
+        final NoteAdapter adapter = new NoteAdapter(this, list);
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -73,7 +77,8 @@ public class NotesActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
 
                 Intent intent = new Intent(NotesActivity.this, CreateNoteActivity.class);
-                intent.putExtra(AllSharedPreferences.NOTE_ID, position+1);
+                AllSharedPreferences.NOTE_IN_QUEUE = position;
+                intent.putExtra(Integer.toString(AllSharedPreferences.NOTE_IN_QUEUE), map);
                 startActivity(intent);
 
             }
@@ -90,18 +95,13 @@ public class NotesActivity extends AppCompatActivity {
 
     private ArrayList<Note> getNoteList() throws IOException {
         list = new ArrayList<>();
-        int id = 1;
-        while (id <= 100) //добавить пользователю возможность выбора числа заметок
-        {
-            BufferedReader bufferedReader = null;
-            try {
-                bufferedReader = new BufferedReader(new InputStreamReader(openFileInput(id + ".txt")));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                id++;
-            }
+        AllSharedPreferences.NOTE_IN_QUEUE = 0;
 
+        File notesAsFiles = this.getFilesDir();
+        for (String noteName : Objects.requireNonNull(notesAsFiles.list())) {
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(openFileInput(noteName)));
+            map.put(AllSharedPreferences.NOTE_IN_QUEUE, noteName);
             if (bufferedReader != null) {
                 JsonParser jsonParser = new JsonParser();
                 JsonObject noteJson = (JsonObject) jsonParser.parse(bufferedReader);
@@ -120,10 +120,13 @@ public class NotesActivity extends AppCompatActivity {
                     time = null;
                 }
 
+                int id = Integer.parseInt(noteName.substring(0, noteName.length() - 4));
                 Note note = new Note(id, headline, body, hasDeadline, date, time);
+
                 list.add(note);
                 bufferedReader.close();
             }
+            AllSharedPreferences.NOTE_IN_QUEUE++;
         }
         return list;
     }

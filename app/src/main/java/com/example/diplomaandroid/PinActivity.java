@@ -11,6 +11,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.List;
+
 public class PinActivity extends AppCompatActivity {
     Button button1;
     Button button2;
@@ -87,7 +91,7 @@ public class PinActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (pin.length() == 3) {
                     pin = pin + "1";
-                    checkPin();
+                    if (!checkPin(pin)) actIfPasswordIsWrong();
                 } else {
                     pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
                     pin = pin + "1";
@@ -100,7 +104,7 @@ public class PinActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (pin.length() == 3) {
                     pin = pin + "2";
-                    checkPin();
+                    if (!checkPin(pin)) actIfPasswordIsWrong();
                 } else {
                     pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
                     pin = pin + "2";
@@ -113,7 +117,7 @@ public class PinActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (pin.length() == 3) {
                     pin = pin + "3";
-                    checkPin();
+                    if (!checkPin(pin)) actIfPasswordIsWrong();
                 } else {
                     pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
                     pin = pin + "3";
@@ -126,7 +130,7 @@ public class PinActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (pin.length() == 3) {
                     pin = pin + "4";
-                    checkPin();
+                    if (!checkPin(pin)) actIfPasswordIsWrong();
                 } else {
                     pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
                     pin = pin + "4";
@@ -139,7 +143,7 @@ public class PinActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (pin.length() == 3) {
                     pin = pin + "5";
-                    checkPin();
+                    if (!checkPin(pin)) actIfPasswordIsWrong();
                 } else {
                     pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
                     pin = pin + "5";
@@ -152,7 +156,7 @@ public class PinActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (pin.length() == 3) {
                     pin = pin + "6";
-                    checkPin();
+                    if (!checkPin(pin)) actIfPasswordIsWrong();
                 } else {
                     pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
                     pin = pin + "6";
@@ -165,7 +169,7 @@ public class PinActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (pin.length() == 3) {
                     pin = pin + "7";
-                    checkPin();
+                    if (!checkPin(pin)) actIfPasswordIsWrong();
                 } else {
                     pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
                     pin = pin + "7";
@@ -178,7 +182,7 @@ public class PinActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (pin.length() == 3) {
                     pin = pin + "8";
-                    checkPin();
+                    if (!checkPin(pin)) actIfPasswordIsWrong();
                 } else {
                     pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
                     pin = pin + "8";
@@ -191,7 +195,7 @@ public class PinActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (pin.length() == 3) {
                     pin = pin + "9";
-                    checkPin();
+                    if (!checkPin(pin)) actIfPasswordIsWrong();
                 } else {
                     pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
                     pin = pin + "9";
@@ -204,7 +208,9 @@ public class PinActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (pin.length() == 3) {
                     pin = pin + "0";
-                    checkPin();
+
+                    if (!checkPin(pin)) actIfPasswordIsWrong();
+
                 } else {
                     pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
                     pin = pin + "0";
@@ -223,21 +229,33 @@ public class PinActivity extends AppCompatActivity {
         });
     }
 
-    private void checkPin() {
-        SharedPreferences preferences = getSharedPreferences(AllSharedPreferences.PIN_PREFS, MODE_PRIVATE);
-        if (pin.equals(preferences.getString(AllSharedPreferences.PIN, ""))) {
-            Intent intent = new Intent(PinActivity.this, NotesActivity.class);
-            startActivity(intent);
-        } else {
-            for (View view : pinViews) view.setBackgroundColor(Color.GRAY);
-            pin = "";
-            wrongPasswordTV.setText("А всё, а всё...");
-        }
-    }
-
     private void createToolbar() {
         Toolbar toolbar = findViewById(R.id.pin_activity_toolbar);
         toolbar.setTitle("Welcome, Mate)");
         setSupportActionBar(toolbar);
+    }
+
+
+    public boolean hasPin() {
+        return false;
+    }
+
+
+    public boolean checkPin(String pin) {
+        SharedPreferences preferences = getSharedPreferences(AllSharedPreferences.PIN_PREFS, MODE_PRIVATE);
+        if (pin.equals(preferences.getString(AllSharedPreferences.PIN, ""))) {
+            Intent intent = new Intent(PinActivity.this, NotesActivity.class);
+            startActivity(intent);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+    public void actIfPasswordIsWrong() {
+        for (View view : pinViews) view.setBackgroundColor(Color.GRAY);
+        pin = "";
+        wrongPasswordTV.setText("А всё, а всё...");
     }
 }
