@@ -11,7 +11,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/change_pin_toolbar"
@@ -33,7 +33,7 @@
         android:textSize="30sp" />
 
     <LinearLayout
-        android:layout_gravity="center"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -46,7 +46,8 @@
             android:hint="@string/enter_new_pin_text"
             android:inputType="numberPassword"
             android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu"
-            tools:ignore="TextFields" />
+            tools:ignore="TextFields"
+            android:layout_marginEnd="5dp"/>
 
         <ImageButton
             android:id="@+id/buttonViewPin"
@@ -60,7 +61,7 @@
         android:id="@+id/saveNewPinButton"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         android:text="@string/save" />
 
     <TextView

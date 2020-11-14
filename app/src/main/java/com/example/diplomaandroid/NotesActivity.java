@@ -1,6 +1,8 @@
 package com.example.diplomaandroid;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -10,6 +12,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -19,6 +23,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +38,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Objects;
@@ -39,8 +47,9 @@ import java.util.Objects;
 public class NotesActivity extends AppCompatActivity {
     ListView listView;
     ArrayList<Note> list;
-
     HashMap<Integer, String> map;
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +62,7 @@ public class NotesActivity extends AppCompatActivity {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void init() throws IOException {
         createToolbar();
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -86,20 +96,49 @@ public class NotesActivity extends AppCompatActivity {
 
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                return false;
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long l) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(NotesActivity.this);
+                builder.setTitle("ну что, удаляем?");
+                builder.setPositiveButton("угусь", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String fileName = map.get(position);
+                        assert fileName != null;
+                        File file = new File(getFilesDir(), fileName);
+                        file.delete();
+                        Toast.makeText(NotesActivity.this, "Заметка удалена!", Toast.LENGTH_SHORT).show();
+                        try {
+                            init();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                builder.setNegativeButton("ноуп", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+                return true;
             }
         });
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private ArrayList<Note> getNoteList() throws IOException {
         list = new ArrayList<>();
         AllSharedPreferences.NOTE_IN_QUEUE = 0;
 
-        File notesAsFiles = this.getFilesDir();
-        for (String noteName : Objects.requireNonNull(notesAsFiles.list())) {
+        File[] files = this.getFilesDir().listFiles();
+        assert files != null;
+        Arrays.sort(files, Comparator.comparingLong(File::lastModified).reversed());
 
+        for (File noteFile : files) {
+            String noteName = noteFile.getName();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(openFileInput(noteName)));
             map.put(AllSharedPreferences.NOTE_IN_QUEUE, noteName);
             if (bufferedReader != null) {
@@ -157,4 +196,6 @@ public class NotesActivity extends AppCompatActivity {
         toolbar.setTitle("Заметочки...");
         setSupportActionBar(toolbar);
     }
+
+    //спросить: как сделать неиспользованные поля заметки GONE?
 }

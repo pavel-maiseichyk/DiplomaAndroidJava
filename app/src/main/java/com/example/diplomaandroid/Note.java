@@ -40,4 +40,11 @@ public class Note {
     public String getTime() {
         return time;
     }
+
+    public boolean isEmpty() {
+        if (getHeadline().equals(""))
+            if (getBody().equals(""))
+                return !isHasDeadline();
+        return false;
+    }
 }
