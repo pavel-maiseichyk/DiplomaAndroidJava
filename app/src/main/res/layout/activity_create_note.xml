@@ -48,18 +48,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <CheckBox
                 android:id="@+id/has_deadline"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="150dp" />
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Has Deadline" />
+                android:text="@string/has_deadline" />
         </LinearLayout>
 
         <FrameLayout
@@ -73,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:gravity="center"
-                android:text="Have a nice day))"
+                android:text="@string/have_a_nice_day"
                 android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu"
                 android:textSize="25sp"
                 android:visibility="visible" />
@@ -90,7 +90,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="25dp"
-                    android:hint="Введите дату"
+                    android:hint="@string/enter_date"
                     android:inputType="date" />
 
                 <ImageButton
@@ -103,7 +103,7 @@
                     android:id="@+id/time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="Введите время"
+                    android:hint="@string/enter_time"
                     android:inputType="time" />
 
                 <ImageButton
@@ -120,6 +120,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="25dp"
-            android:text="Сохранить" />
+            android:text="@string/save" />
     </LinearLayout>
 </ScrollView>

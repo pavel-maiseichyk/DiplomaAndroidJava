@@ -2,22 +2,23 @@ package com.example.diplomaandroid;
 
 import android.app.Application;
 
-    public class App extends Application {
-        private static NoteRepository noteRepository;
-        private static PasswordRepository passwordRepository;
-        @Override
-        public void onCreate() {
-            super.onCreate();
+public class App extends Application {
+    private static NoteRepository noteRepository;
+    private static PasswordRepository passwordRepository;
 
-            noteRepository = new FileNoteRepository(this);
-            //passwordRepository = new SimpleKeystore(this);
-        }
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
-        public static NoteRepository getNoteRepository() {
-            return noteRepository;
-        }
-
-        public static PasswordRepository getPasswordRepository() {
-            return passwordRepository;
-        }
+        noteRepository = new FileNoteRepository();
+        passwordRepository = new SimpleKeystore();
     }
+
+    public static NoteRepository getNoteRepository() {
+        return noteRepository;
+    }
+
+    public static PasswordRepository getPasswordRepository() {
+        return passwordRepository;
+    }
+}

@@ -19,7 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class ChangePinActivity extends AppCompatActivity {
-    SharedPreferences pinPreferences;
+    static SharedPreferences pinPreferences;
+    static SharedPreferences isFirstTimePrefs;
 
     TextView newPinWarning;
     EditText newPinET;
@@ -38,9 +39,10 @@ public class ChangePinActivity extends AppCompatActivity {
 
     public void init() {
 
-createToolbar();
+        createToolbar();
 
         pinPreferences = getSharedPreferences(AllSharedPreferences.PIN_PREFS, MODE_PRIVATE);
+        isFirstTimePrefs = getSharedPreferences(AllSharedPreferences.FIRST_TIME_PREFS, MODE_PRIVATE);
 
         newPinET = findViewById(R.id.newPin);
 
@@ -48,39 +50,28 @@ createToolbar();
 
         saveButton = findViewById(R.id.saveNewPinButton);
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                newPin = newPinET.getText().toString();
-                if (newPin.length() != 4) {
-                    newPinWarning.setText("Ноуп, подавай 4 циферки");
-                    newPinET.setText("");
-                } else {
-                    SharedPreferences.Editor pinEditor = pinPreferences.edit();
-                    pinEditor.putString(AllSharedPreferences.PIN, newPin).apply();
+        saveButton.setOnClickListener(view -> {
+            newPin = newPinET.getText().toString();
 
-                    SharedPreferences isFirstTimePrefs = getSharedPreferences(AllSharedPreferences.FIRST_TIME_PREFS, MODE_PRIVATE);
-                    SharedPreferences.Editor isFirstTimeEditor = isFirstTimePrefs.edit();
-                    isFirstTimeEditor.putBoolean(AllSharedPreferences.FIRST_TIME, false).apply();
+            if (!App.getPasswordRepository().saveNew(newPin)) {
+                newPinWarning.setText("Ноуп, подавай 4 циферки");
+                newPinET.setText("");
+            } else {
 
-                    Toast.makeText(ChangePinActivity.this, "PIN сохранен (ну, по идее)", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(ChangePinActivity.this, PinActivity.class);
-                    startActivity(intent);
-                }
+                Toast.makeText(ChangePinActivity.this, "PIN сохранен!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ChangePinActivity.this, PinActivity.class);
+                startActivity(intent);
             }
         });
 
         viewPinButton = findViewById(R.id.buttonViewPin);
-        viewPinButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (newPinET.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
-                    newPinET.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-                    viewPinButton.setImageDrawable(ContextCompat.getDrawable(ChangePinActivity.this, R.drawable.visibility_visible));
-                } else {
-                    newPinET.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    viewPinButton.setImageDrawable(ContextCompat.getDrawable(ChangePinActivity.this, R.drawable.visibility_off));
-                }
+        viewPinButton.setOnClickListener(view -> {
+            if (newPinET.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
+                newPinET.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                viewPinButton.setImageDrawable(ContextCompat.getDrawable(ChangePinActivity.this, R.drawable.visibility_visible));
+            } else {
+                newPinET.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                viewPinButton.setImageDrawable(ContextCompat.getDrawable(ChangePinActivity.this, R.drawable.visibility_off));
             }
         });
     }

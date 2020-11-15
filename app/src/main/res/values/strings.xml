@@ -11,8 +11,7 @@
     <string name="nine">9</string>
     <string name="zero">0</string>
     <string name="enter_pin_text">Enter PIN</string>
-    <string name="enter">Enter</string>
-    <string name="save">Save</string>
+    <string name="save">Сохранить</string>
     <string name="delete">Delete</string>
     <string name="enter_new_pin_text">Enter new PIN</string>
     <string name="title_activity_notes">NotesActivity</string>
@@ -24,4 +23,9 @@
 
     <string name="note_headline">Введите заголовок</string>
     <string name="note_body">Введите заметку</string>
+    <string name="has_deadline">Has Deadline</string>
+    <string name="have_a_nice_day">Have a nice day))</string>
+    <string name="enter_date">Введите дату</string>
+    <string name="enter_time">Введите время</string>
+    <string name="deadline">deadline: </string>
 </resources>

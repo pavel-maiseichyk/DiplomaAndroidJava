@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -38,19 +39,36 @@ public class NoteAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup viewGroup) {
-        if (convertView == null) convertView = layoutInflater.inflate(R.layout.list_notes, viewGroup, false);
+        ViewHolder viewHolder;
+        if (convertView == null) {
+            convertView = layoutInflater.inflate(R.layout.list_notes, viewGroup, false);
+            viewHolder = new ViewHolder();
+        } else viewHolder = (ViewHolder) convertView.getTag();
         Note note = list.get(position);
 
         assert convertView != null;
-        TextView headline = convertView.findViewById(R.id.list_headline);
-        TextView body = convertView.findViewById(R.id.list_note_body);
-        TextView date = convertView.findViewById(R.id.list_date);
-        TextView time = convertView.findViewById(R.id.list_time);
+        viewHolder.headline = convertView.findViewById(R.id.list_headline);
+        viewHolder.body = convertView.findViewById(R.id.list_note_body);
+        viewHolder.linearLayout = convertView.findViewById(R.id.list_deadline_layout);
+        viewHolder.date = convertView.findViewById(R.id.list_date);
+        viewHolder.time = convertView.findViewById(R.id.list_time);
 
-        headline.setText(note.getHeadline());
-        body.setText(note.getBody());
-        date.setText(note.getDate());
-        time.setText(note.getTime());
+        viewHolder.headline.setText(note.getHeadline());
+        viewHolder.body.setText(note.getBody());
+        viewHolder.date.setText(note.getDate());
+        viewHolder.time.setText(note.getTime());
+
+        if (note.getHeadline().equals("")) viewHolder.headline.setVisibility(View.GONE);
+        if (note.getBody().equals("")) viewHolder.body.setVisibility(View.GONE);
+        if (!note.isHasDeadline()) viewHolder.linearLayout.setVisibility(View.GONE);
         return convertView;
+    }
+
+    private static class ViewHolder {
+        TextView headline;
+        TextView body;
+        TextView date;
+        TextView time;
+        LinearLayout linearLayout;
     }
 }

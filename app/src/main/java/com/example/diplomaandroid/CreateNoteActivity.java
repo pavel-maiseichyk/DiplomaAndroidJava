@@ -70,7 +70,6 @@ public class CreateNoteActivity extends AppCompatActivity {
         id = random.nextInt();
 
         hasDeadlineCB = findViewById(R.id.has_deadline);
-
         Intent intentWithNoteData = this.getIntent();
         BufferedReader bufferedReader = null;
         if (intentWithNoteData != null) {
@@ -130,30 +129,20 @@ public class CreateNoteActivity extends AppCompatActivity {
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        int month = calendar.get(Calendar.MONTH);
+        int month = calendar.get(Calendar.MONTH) + 1;
+        if (month == 13) month = 1;
+        int finalMonth = month;
         int year = calendar.get(Calendar.YEAR);
 
         ImageButton calendarButton = findViewById(R.id.calendar_button);
         calendarButton.setOnClickListener(view -> {
-            DatePickerDialog datePickerDialog = new DatePickerDialog(CreateNoteActivity.this, new DatePickerDialog.OnDateSetListener() {
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void onDateSet(DatePicker datePicker, int mYear, int mMonth, int mDay) {
-                    date.setText(checkIfToAddZero(mDay) + "/" + checkIfToAddZero(mMonth + 1) + "/" + checkIfToAddZero(mYear));
-                }
-            }, day, month, year);
+            DatePickerDialog datePickerDialog = new DatePickerDialog(CreateNoteActivity.this, (datePicker, mYear, mMonth, mDay) -> date.setText(checkIfToAddZero(mDay) + "/" + checkIfToAddZero(mMonth + 1) + "/" + checkIfToAddZero(mYear)), day, finalMonth, year);
             datePickerDialog.show();
         });
 
         ImageButton timeButton = findViewById(R.id.time_button);
         timeButton.setOnClickListener(view -> {
-            TimePickerDialog timePickerDialog = new TimePickerDialog(CreateNoteActivity.this, new TimePickerDialog.OnTimeSetListener() {
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void onTimeSet(TimePicker timePicker, int mHour, int mMinute) {
-                    time.setText(checkIfToAddZero(mHour) + ":" + checkIfToAddZero(mMinute));
-                }
-            }, hour, minute, true);
+            TimePickerDialog timePickerDialog = new TimePickerDialog(CreateNoteActivity.this, (timePicker, mHour, mMinute) -> time.setText(checkIfToAddZero(mHour) + ":" + checkIfToAddZero(mMinute)), hour, minute, true);
             timePickerDialog.show();
         });
 
@@ -163,18 +152,17 @@ public class CreateNoteActivity extends AppCompatActivity {
         saveButton.setOnClickListener(view -> {
             try {
                 Note note = createNote();
-                //1 way:
-                App.getNoteRepository().saveNote(note);
-
-                //2 way:
-                //saveNote(note);
+                if (App.getNoteRepository().saveNote(note))
+                    Toast.makeText(this, "Заметка сохранена)", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(this, "Заметка была пустой, поэтому не была сохранена :(", Toast.LENGTH_SHORT).show();
+                goToNotesActivity();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         });
 
-        if (isBeingFixed)
-            file = new File(getFilesDir(), idS);
+        file = new File(getFilesDir(), idS);
     }
 
     private void checkVisibility(boolean isChecked) {
@@ -197,17 +185,12 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        //1 way:
         try {
             App.getNoteRepository().deleteById(id);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        Intent intent = new Intent(this, NotesActivity.class);
-        startActivity(intent);
-
-        //2 way:
-        //deleteByFileName(fileName);
+        goToNotesActivity();
         return true;
     }
 
@@ -240,32 +223,9 @@ public class CreateNoteActivity extends AppCompatActivity {
             valueS = "0" + value;
         return valueS;
     }
-        /*public void saveNote(Note note) throws IOException {
 
-        if (note.isEmpty()) {
-            deleteByFileName(note.getId() + ".txt");
-            Toast.makeText(CreateNoteActivity.this, "Заметка была пустой, поэтому не была сохранена :(", Toast.LENGTH_SHORT).show();
-        } else {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(note);
-            BufferedWriter bufferedWriter;
-            if (!isBeingFixed) {
-                bufferedWriter = new BufferedWriter(new OutputStreamWriter(openFileOutput((note.getId() + ".txt"), MODE_PRIVATE)));
-            } else {
-                bufferedWriter = new BufferedWriter(new OutputStreamWriter(openFileOutput((idS), MODE_PRIVATE)));
-            }
-            bufferedWriter.append(json);
-            bufferedWriter.close();
-            Toast.makeText(CreateNoteActivity.this, "Заметка сохранена)", Toast.LENGTH_SHORT).show();
-        }
+    private void goToNotesActivity() {
         Intent intent = new Intent(CreateNoteActivity.this, NotesActivity.class);
         startActivity(intent);
     }
-
-    public static void deleteByFileName(String fileName) {
-        File file = new File(getFilesDir(), fileName);
-        file.delete();
-        Intent intent = new Intent(CreateNoteActivity.this, NotesActivity.class);
-        startActivity(intent);
-    }*/
 }

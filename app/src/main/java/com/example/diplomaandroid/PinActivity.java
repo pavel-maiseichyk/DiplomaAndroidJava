@@ -11,23 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
-
 public class PinActivity extends AppCompatActivity {
-    Button button1;
-    Button button2;
-    Button button3;
-    Button button4;
-    Button button5;
-    Button button6;
-    Button button7;
-    Button button8;
-    Button button9;
-    Button button0;
-    Button buttonDelete;
-
     TextView wrongPasswordTV;
 
     View pinValue1;
@@ -38,7 +22,8 @@ public class PinActivity extends AppCompatActivity {
 
     String pin = "";
 
-    SharedPreferences isFirstTimePreferences;
+    static SharedPreferences isFirstTimePreferences;
+    static SharedPreferences pinPreferences;
     public boolean isFirstTime;
 
     @Override
@@ -47,14 +32,13 @@ public class PinActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pin);
 
         init();
-
-        pinViews = new View[]{pinValue1, pinValue2, pinValue3, pinValue4};
     }
 
     public void init() {
         createToolbar();
+        pinPreferences = getSharedPreferences(AllSharedPreferences.PIN_PREFS, MODE_PRIVATE);
         isFirstTimePreferences = getSharedPreferences(AllSharedPreferences.FIRST_TIME_PREFS, MODE_PRIVATE);
-        isFirstTime = isFirstTimePreferences.getBoolean(AllSharedPreferences.FIRST_TIME, true);
+        isFirstTime = App.getPasswordRepository().hasPin();
 
         if (isFirstTime) {
             Intent intent = new Intent(PinActivity.this, ChangePinActivity.class);
@@ -67,17 +51,17 @@ public class PinActivity extends AppCompatActivity {
             }
         }
 
-        button1 = findViewById(R.id.button1);
-        button2 = findViewById(R.id.button2);
-        button3 = findViewById(R.id.button3);
-        button4 = findViewById(R.id.button4);
-        button5 = findViewById(R.id.button5);
-        button6 = findViewById(R.id.button6);
-        button7 = findViewById(R.id.button7);
-        button8 = findViewById(R.id.button8);
-        button9 = findViewById(R.id.button9);
-        buttonDelete = findViewById(R.id.buttonDelete);
-        button0 = findViewById(R.id.button0);
+        Button button1 = findViewById(R.id.button1);
+        Button button2 = findViewById(R.id.button2);
+        Button button3 = findViewById(R.id.button3);
+        Button button4 = findViewById(R.id.button4);
+        Button button5 = findViewById(R.id.button5);
+        Button button6 = findViewById(R.id.button6);
+        Button button7 = findViewById(R.id.button7);
+        Button button8 = findViewById(R.id.button8);
+        Button button9 = findViewById(R.id.button9);
+        Button buttonDelete = findViewById(R.id.buttonDelete);
+        Button button0 = findViewById(R.id.button0);
 
         wrongPasswordTV = findViewById(R.id.wrong_password_tv);
 
@@ -86,147 +70,124 @@ public class PinActivity extends AppCompatActivity {
         pinValue3 = findViewById(R.id.pinValue3);
         pinValue4 = findViewById(R.id.pinValue4);
 
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pin.length() == 3) {
-                    pin = pin + "1";
-                    if (!checkPin(pin)) actIfPasswordIsWrong();
-                } else {
-                    pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
-                    pin = pin + "1";
-                }
+        button1.setOnClickListener(view -> {
+            if (pin.length() == 3) {
+                pin = pin + "1";
+                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
+                else goToNotesActivity();
+            } else {
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pin = pin + "1";
             }
         });
 
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pin.length() == 3) {
-                    pin = pin + "2";
-                    if (!checkPin(pin)) actIfPasswordIsWrong();
-                } else {
-                    pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
-                    pin = pin + "2";
-                }
+        button2.setOnClickListener(view -> {
+            if (pin.length() == 3) {
+                pin = pin + "2";
+                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
+                else goToNotesActivity();
+                ;
+            } else {
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pin = pin + "2";
             }
         });
 
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pin.length() == 3) {
-                    pin = pin + "3";
-                    if (!checkPin(pin)) actIfPasswordIsWrong();
-                } else {
-                    pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
-                    pin = pin + "3";
-                }
+        button3.setOnClickListener(view -> {
+            if (pin.length() == 3) {
+                pin = pin + "3";
+                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
+                else goToNotesActivity();
+            } else {
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pin = pin + "3";
             }
         });
 
-        button4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pin.length() == 3) {
-                    pin = pin + "4";
-                    if (!checkPin(pin)) actIfPasswordIsWrong();
-                } else {
-                    pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
-                    pin = pin + "4";
-                }
+        button4.setOnClickListener(view -> {
+            if (pin.length() == 3) {
+                pin = pin + "4";
+                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
+                else goToNotesActivity();
+            } else {
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pin = pin + "4";
             }
         });
 
-        button5.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pin.length() == 3) {
-                    pin = pin + "5";
-                    if (!checkPin(pin)) actIfPasswordIsWrong();
-                } else {
-                    pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
-                    pin = pin + "5";
-                }
+        button5.setOnClickListener(view -> {
+            if (pin.length() == 3) {
+                pin = pin + "5";
+                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
+                else goToNotesActivity();
+            } else {
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pin = pin + "5";
             }
         });
 
-        button6.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pin.length() == 3) {
-                    pin = pin + "6";
-                    if (!checkPin(pin)) actIfPasswordIsWrong();
-                } else {
-                    pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
-                    pin = pin + "6";
-                }
+        button6.setOnClickListener(view -> {
+            if (pin.length() == 3) {
+                pin = pin + "6";
+                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
+                else goToNotesActivity();
+            } else {
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pin = pin + "6";
             }
         });
 
-        button7.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pin.length() == 3) {
-                    pin = pin + "7";
-                    if (!checkPin(pin)) actIfPasswordIsWrong();
-                } else {
-                    pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
-                    pin = pin + "7";
-                }
+        button7.setOnClickListener(view -> {
+            if (pin.length() == 3) {
+                pin = pin + "7";
+                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
+                else goToNotesActivity();
+            } else {
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pin = pin + "7";
             }
         });
 
-        button8.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pin.length() == 3) {
-                    pin = pin + "8";
-                    if (!checkPin(pin)) actIfPasswordIsWrong();
-                } else {
-                    pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
-                    pin = pin + "8";
-                }
+        button8.setOnClickListener(view -> {
+            if (pin.length() == 3) {
+                pin = pin + "8";
+                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
+                else goToNotesActivity();
+            } else {
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pin = pin + "8";
             }
         });
 
-        button9.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pin.length() == 3) {
-                    pin = pin + "9";
-                    if (!checkPin(pin)) actIfPasswordIsWrong();
-                } else {
-                    pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
-                    pin = pin + "9";
-                }
+        button9.setOnClickListener(view -> {
+            if (pin.length() == 3) {
+                pin = pin + "9";
+                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
+                else goToNotesActivity();
+            } else {
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pin = pin + "9";
             }
         });
 
-        button0.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pin.length() == 3) {
-                    pin = pin + "0";
-
-                    if (!checkPin(pin)) actIfPasswordIsWrong();
-
-                } else {
-                    pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
-                    pin = pin + "0";
-                }
+        button0.setOnClickListener(view -> {
+            if (pin.length() == 3) {
+                pin = pin + "0";
+                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
+                else goToNotesActivity();
+            } else {
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pin = pin + "0";
             }
         });
 
-        buttonDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (pin.length() != 0) {
-                    pin = pin.substring(0, pin.length() - 1);
-                    pinViews[pin.length()].setBackgroundColor(Color.GRAY);
-                }
+        buttonDelete.setOnClickListener(view -> {
+            if (pin.length() != 0) {
+                pin = pin.substring(0, pin.length() - 1);
+                pinViews[pin.length()].setBackgroundColor(Color.GRAY);
             }
         });
+        pinViews = new View[]{pinValue1, pinValue2, pinValue3, pinValue4};
     }
 
     private void createToolbar() {
@@ -235,27 +196,14 @@ public class PinActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
-
-    public boolean hasPin() {
-        return false;
-    }
-
-
-    public boolean checkPin(String pin) {
-        SharedPreferences preferences = getSharedPreferences(AllSharedPreferences.PIN_PREFS, MODE_PRIVATE);
-        if (pin.equals(preferences.getString(AllSharedPreferences.PIN, ""))) {
-            Intent intent = new Intent(PinActivity.this, NotesActivity.class);
-            startActivity(intent);
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
     public void actIfPasswordIsWrong() {
         for (View view : pinViews) view.setBackgroundColor(Color.GRAY);
         pin = "";
         wrongPasswordTV.setText("А всё, а всё...");
+    }
+
+    private void goToNotesActivity() {
+        Intent intent = new Intent(PinActivity.this, NotesActivity.class);
+        startActivity(intent);
     }
 }
