@@ -14,11 +14,11 @@ public class App extends Application {
         passwordRepository = new SimpleKeystore();
     }
 
-    public static NoteRepository getNoteRepository() {
+    static NoteRepository getNoteRepository() {
         return noteRepository;
     }
 
-    public static PasswordRepository getPasswordRepository() {
+    static PasswordRepository getPasswordRepository() {
         return passwordRepository;
     }
 }

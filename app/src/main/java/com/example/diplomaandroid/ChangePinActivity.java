@@ -18,16 +18,13 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputLayout;
+
+import java.util.Objects;
+
 public class ChangePinActivity extends AppCompatActivity {
     static SharedPreferences pinPreferences;
     static SharedPreferences isFirstTimePrefs;
-
-    TextView newPinWarning;
-    EditText newPinET;
-    String newPin;
-
-    Button saveButton;
-    ImageButton viewPinButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,33 +35,26 @@ public class ChangePinActivity extends AppCompatActivity {
     }
 
     public void init() {
-
         createToolbar();
 
         pinPreferences = getSharedPreferences(AllSharedPreferences.PIN_PREFS, MODE_PRIVATE);
         isFirstTimePrefs = getSharedPreferences(AllSharedPreferences.FIRST_TIME_PREFS, MODE_PRIVATE);
 
-        newPinET = findViewById(R.id.newPin);
-
-        newPinWarning = findViewById(R.id.new_pin_warning);
-
-        saveButton = findViewById(R.id.saveNewPinButton);
-
+        EditText newPinET = findViewById(R.id.newPin);
+        Button saveButton = findViewById(R.id.saveNewPinButton);
         saveButton.setOnClickListener(view -> {
-            newPin = newPinET.getText().toString();
-
+            String newPin = newPinET.getText().toString();
             if (!App.getPasswordRepository().saveNew(newPin)) {
-                newPinWarning.setText("Ноуп, подавай 4 циферки");
-                newPinET.setText("");
+                TextInputLayout passwordLayout = findViewById(R.id.password_layout);
+                passwordLayout.setError(getResources().getString(R.string.new_password_error));
             } else {
-
-                Toast.makeText(ChangePinActivity.this, "PIN сохранен!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(ChangePinActivity.this, getResources().getString(R.string.new_pin_saved), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ChangePinActivity.this, PinActivity.class);
                 startActivity(intent);
             }
         });
 
-        viewPinButton = findViewById(R.id.buttonViewPin);
+        ImageButton viewPinButton = findViewById(R.id.buttonViewPin);
         viewPinButton.setOnClickListener(view -> {
             if (newPinET.getTransformationMethod().equals(PasswordTransformationMethod.getInstance())) {
                 newPinET.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
@@ -78,7 +68,11 @@ public class ChangePinActivity extends AppCompatActivity {
 
     private void createToolbar() {
         Toolbar toolbar = findViewById(R.id.change_pin_toolbar);
-        toolbar.setTitle("Меняем парольчик...");
+        toolbar.setTitle(getResources().getString(R.string.change_pin_title));
         setSupportActionBar(toolbar);
+        if (!App.getPasswordRepository().hasPin()) {
+            Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(view -> onBackPressed());
+        }
     }
 }

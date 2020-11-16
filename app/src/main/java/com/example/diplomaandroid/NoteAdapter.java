@@ -60,7 +60,7 @@ public class NoteAdapter extends BaseAdapter {
 
         if (note.getHeadline().equals("")) viewHolder.headline.setVisibility(View.GONE);
         if (note.getBody().equals("")) viewHolder.body.setVisibility(View.GONE);
-        if (!note.isHasDeadline()) viewHolder.linearLayout.setVisibility(View.GONE);
+        if (!note.hasDeadline()) viewHolder.linearLayout.setVisibility(View.GONE);
         return convertView;
     }
 

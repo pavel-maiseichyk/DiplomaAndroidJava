@@ -1,6 +1,5 @@
 package com.example.diplomaandroid;
 
-
 import android.os.Build;
 
 import androidx.annotation.RequiresApi;

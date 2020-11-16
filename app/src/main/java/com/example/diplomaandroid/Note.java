@@ -29,7 +29,7 @@ public class Note {
         return body;
     }
 
-    public boolean isHasDeadline() {
+    public boolean hasDeadline() {
         return hasDeadline;
     }
 
@@ -44,7 +44,7 @@ public class Note {
     public boolean isEmpty() {
         if (getHeadline().equals(""))
             if (getBody().equals(""))
-                return !isHasDeadline();
+                return !hasDeadline();
         return false;
     }
 }

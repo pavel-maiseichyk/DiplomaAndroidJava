@@ -1,15 +1,10 @@
 package com.example.diplomaandroid;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -19,30 +14,13 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Objects;
 
 public class NotesActivity extends AppCompatActivity {
     static HashMap<Integer, String> map;
@@ -63,7 +41,7 @@ public class NotesActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void init() throws IOException {
+    private void init() throws IOException {
         createToolbar();
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
@@ -82,34 +60,29 @@ public class NotesActivity extends AppCompatActivity {
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((adapterView, view, position, l) -> {
-
             Intent intent = new Intent(NotesActivity.this, CreateNoteActivity.class);
             AllSharedPreferences.NOTE_IN_QUEUE = position;
             intent.putExtra(Integer.toString(AllSharedPreferences.NOTE_IN_QUEUE), map);
             startActivity(intent);
-
         });
 
         listView.setOnItemLongClickListener((adapterView, view, position, l) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(NotesActivity.this);
-            builder.setTitle("ну что, удаляем?");
-            builder.setPositiveButton("угусь", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    String fileName = map.get(position);
-                    assert fileName != null;
-                    File file = new File(getFilesDir(), fileName);
-                    file.delete();
-                    Toast.makeText(NotesActivity.this, "Заметка удалена!", Toast.LENGTH_SHORT).show();
-                    try {
-                        init();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+            builder.setTitle(getResources().getString(R.string.delete_alert));
+            builder.setPositiveButton(getResources().getString(R.string.yep), (dialogInterface, i) -> {
+                String fileName = map.get(position);
+                assert fileName != null;
+                File file = new File(getFilesDir(), fileName);
+                file.delete();
+                Toast.makeText(NotesActivity.this, getResources().getString(R.string.note_deleted_toast), Toast.LENGTH_SHORT).show();
+                try {
+                    init();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             });
 
-            builder.setNegativeButton("ноуп", (dialogInterface, i) -> {
+            builder.setNegativeButton(getResources().getString(R.string.nope), (dialogInterface, i) -> {
             });
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
@@ -141,7 +114,7 @@ public class NotesActivity extends AppCompatActivity {
 
     private void createToolbar() {
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle("Заметочки...");
+        toolbar.setTitle(getResources().getString(R.string.notes_title));
         setSupportActionBar(toolbar);
     }
 }

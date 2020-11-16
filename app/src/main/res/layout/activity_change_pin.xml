@@ -39,20 +39,29 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/newPin"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password_layout"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="5dp"
-            android:hint="@string/enter_new_pin_text"
-            android:inputType="numberPassword"
-            android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu"
-            tools:ignore="TextFields" />
+            android:layout_height="wrap_content"
+            app:errorEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/newPin"
+                android:layout_width="115dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="5dp"
+                android:inputType="numberPassword"
+                android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu"
+                tools:ignore="TextFields"
+                android:hint="@string/enter_new_pin_here"
+                android:gravity="center"
+                android:maxLength="4"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <ImageButton
             android:id="@+id/buttonViewPin"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:src="@drawable/visibility_off" />
     </LinearLayout>
 
@@ -72,13 +81,4 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu"
         android:textSize="30sp" />
 
-    <TextView
-        android:id="@+id/new_pin_warning"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:textAppearance="@style/TextAppearance.AppCompat.Widget.ActionBar.Menu"
-        android:textSize="30sp" />
 </LinearLayout>

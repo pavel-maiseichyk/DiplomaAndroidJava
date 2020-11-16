@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -14,17 +15,12 @@ import android.widget.TextView;
 public class PinActivity extends AppCompatActivity {
     TextView wrongPasswordTV;
 
-    View pinValue1;
-    View pinValue2;
-    View pinValue3;
-    View pinValue4;
-    View[] pinViews;
+    private View[] pinViews;
 
-    String pin = "";
+    private String pin = "";
 
     static SharedPreferences isFirstTimePreferences;
     static SharedPreferences pinPreferences;
-    public boolean isFirstTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,11 +30,11 @@ public class PinActivity extends AppCompatActivity {
         init();
     }
 
-    public void init() {
+    private void init() {
         createToolbar();
         pinPreferences = getSharedPreferences(AllSharedPreferences.PIN_PREFS, MODE_PRIVATE);
         isFirstTimePreferences = getSharedPreferences(AllSharedPreferences.FIRST_TIME_PREFS, MODE_PRIVATE);
-        isFirstTime = App.getPasswordRepository().hasPin();
+        boolean isFirstTime = App.getPasswordRepository().hasPin();
 
         if (isFirstTime) {
             Intent intent = new Intent(PinActivity.this, ChangePinActivity.class);
@@ -65,10 +61,10 @@ public class PinActivity extends AppCompatActivity {
 
         wrongPasswordTV = findViewById(R.id.wrong_password_tv);
 
-        pinValue1 = findViewById(R.id.pinValue1);
-        pinValue2 = findViewById(R.id.pinValue2);
-        pinValue3 = findViewById(R.id.pinValue3);
-        pinValue4 = findViewById(R.id.pinValue4);
+        View pinValue1 = findViewById(R.id.pinValue1);
+        View pinValue2 = findViewById(R.id.pinValue2);
+        View pinValue3 = findViewById(R.id.pinValue3);
+        View pinValue4 = findViewById(R.id.pinValue4);
 
         button1.setOnClickListener(view -> {
             if (pin.length() == 3) {
@@ -76,7 +72,7 @@ public class PinActivity extends AppCompatActivity {
                 if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
                 else goToNotesActivity();
             } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 pin = pin + "1";
             }
         });
@@ -88,7 +84,7 @@ public class PinActivity extends AppCompatActivity {
                 else goToNotesActivity();
                 ;
             } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 pin = pin + "2";
             }
         });
@@ -99,7 +95,7 @@ public class PinActivity extends AppCompatActivity {
                 if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
                 else goToNotesActivity();
             } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 pin = pin + "3";
             }
         });
@@ -110,7 +106,7 @@ public class PinActivity extends AppCompatActivity {
                 if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
                 else goToNotesActivity();
             } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 pin = pin + "4";
             }
         });
@@ -121,7 +117,7 @@ public class PinActivity extends AppCompatActivity {
                 if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
                 else goToNotesActivity();
             } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 pin = pin + "5";
             }
         });
@@ -132,7 +128,7 @@ public class PinActivity extends AppCompatActivity {
                 if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
                 else goToNotesActivity();
             } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 pin = pin + "6";
             }
         });
@@ -143,7 +139,7 @@ public class PinActivity extends AppCompatActivity {
                 if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
                 else goToNotesActivity();
             } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 pin = pin + "7";
             }
         });
@@ -154,7 +150,7 @@ public class PinActivity extends AppCompatActivity {
                 if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
                 else goToNotesActivity();
             } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 pin = pin + "8";
             }
         });
@@ -165,7 +161,7 @@ public class PinActivity extends AppCompatActivity {
                 if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
                 else goToNotesActivity();
             } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 pin = pin + "9";
             }
         });
@@ -173,10 +169,11 @@ public class PinActivity extends AppCompatActivity {
         button0.setOnClickListener(view -> {
             if (pin.length() == 3) {
                 pin = pin + "0";
+                pinViews[pin.length()-1].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
                 else goToNotesActivity();
             } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary)); //изменить цвет и форму
+                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                 pin = pin + "0";
             }
         });
@@ -192,14 +189,14 @@ public class PinActivity extends AppCompatActivity {
 
     private void createToolbar() {
         Toolbar toolbar = findViewById(R.id.pin_activity_toolbar);
-        toolbar.setTitle("Welcome, Mate)");
+        toolbar.setTitle(getResources().getString(R.string.welcome_title));
         setSupportActionBar(toolbar);
     }
 
-    public void actIfPasswordIsWrong() {
+    private void actIfPasswordIsWrong() {
         for (View view : pinViews) view.setBackgroundColor(Color.GRAY);
         pin = "";
-        wrongPasswordTV.setText("А всё, а всё...");
+        wrongPasswordTV.setText(getResources().getString(R.string.wrong_password_warning));
     }
 
     private void goToNotesActivity() {

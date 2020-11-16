@@ -15,12 +15,6 @@
     <string name="delete">Delete</string>
     <string name="enter_new_pin_text">Enter new PIN</string>
     <string name="title_activity_notes">NotesActivity</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
     <string name="note_headline">Введите заголовок</string>
     <string name="note_body">Введите заметку</string>
     <string name="has_deadline">Has Deadline</string>
@@ -28,4 +22,27 @@
     <string name="enter_date">Введите дату</string>
     <string name="enter_time">Введите время</string>
     <string name="deadline">deadline: </string>
+    <string name="enter_new_pin_here">Вводим сюда)</string>
+
+    <string name="new_password_error">Нужно 4 циферки)</string>
+    <string name="new_pin_saved">PIN сохранён!</string>
+    <string name="change_pin_title">Меняем парольчик...</string>
+    <string name="note_saved_toast">Заметка сохранена)</string>
+    <string name="empty_note_warning">Заметка пустая, может, заполнишь?</string>
+    <string name="option_change_your_mind">одуматься</string>
+    <string name="bye_berlin">прощай, Берлин</string>
+    <string name="empty_note_toast">Заметка была пустой, поэтому не была сохранена :(</string>
+    <string name="create_note_title">Создаём заметочку)</string>
+    <string name="fix_note_title">Редактирование...</string>
+    <string name="not_saved_note_warning">Заметка не была сохранена... Сохранить?</string>
+    <string name="yep">угусь</string>
+    <string name="nope">ноуп</string>
+    <string name="notes_title">Заметочки...</string>
+    <string name="delete_alert">ну что, удаляем?</string>
+    <string name="note_deleted_toast">Заметка удалена!</string>
+    <string name="welcome_title">Hello, Mate)</string>
+    <string name="wrong_password_warning">А всё, а всё...</string>
+    <string name="save_changes_warning">А изменения хоть сохраняем?</string>
+    <string name="note_fixed_toast">Заметка изменена!</string>
+
 </resources>
