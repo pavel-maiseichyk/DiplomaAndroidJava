@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class PinActivity extends AppCompatActivity {
-    TextView wrongPasswordTV;
+    private TextView wrongPasswordTV;
 
     private View[] pinViews;
 

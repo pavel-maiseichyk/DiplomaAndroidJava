@@ -23,8 +23,6 @@ import com.google.android.material.textfield.TextInputLayout;
 import java.util.Objects;
 
 public class ChangePinActivity extends AppCompatActivity {
-    static SharedPreferences pinPreferences;
-    static SharedPreferences isFirstTimePrefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +35,6 @@ public class ChangePinActivity extends AppCompatActivity {
     public void init() {
         createToolbar();
 
-        pinPreferences = getSharedPreferences(AllSharedPreferences.PIN_PREFS, MODE_PRIVATE);
-        isFirstTimePrefs = getSharedPreferences(AllSharedPreferences.FIRST_TIME_PREFS, MODE_PRIVATE);
-
         EditText newPinET = findViewById(R.id.newPin);
         Button saveButton = findViewById(R.id.saveNewPinButton);
         saveButton.setOnClickListener(view -> {
@@ -48,6 +43,7 @@ public class ChangePinActivity extends AppCompatActivity {
                 TextInputLayout passwordLayout = findViewById(R.id.password_layout);
                 passwordLayout.setError(getResources().getString(R.string.new_password_error));
             } else {
+                PinActivity.isFirstTimePreferences.edit().putBoolean(AllSharedPreferences.FIRST_TIME, false).apply();
                 Toast.makeText(ChangePinActivity.this, getResources().getString(R.string.new_pin_saved), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ChangePinActivity.this, PinActivity.class);
                 startActivity(intent);

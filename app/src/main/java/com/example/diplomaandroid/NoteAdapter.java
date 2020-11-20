@@ -12,12 +12,10 @@ import java.util.ArrayList;
 
 public class NoteAdapter extends BaseAdapter {
 
-    Context context;
-    LayoutInflater layoutInflater;
-    ArrayList<Note> list;
+    private LayoutInflater layoutInflater;
+    private ArrayList<Note> list;
 
     NoteAdapter(Context context, ArrayList<Note> notes) {
-        this.context = context;
         this.list = notes;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }

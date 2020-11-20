@@ -34,7 +34,7 @@
     <string name="empty_note_toast">Заметка была пустой, поэтому не была сохранена :(</string>
     <string name="create_note_title">Создаём заметочку)</string>
     <string name="fix_note_title">Редактирование...</string>
-    <string name="not_saved_note_warning">Заметка не была сохранена... Сохранить?</string>
+    <string name="not_saved_note_warning">Сохраняем изменения?</string>
     <string name="yep">угусь</string>
     <string name="nope">ноуп</string>
     <string name="notes_title">Заметочки...</string>

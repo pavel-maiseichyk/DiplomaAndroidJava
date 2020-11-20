@@ -1,12 +1,15 @@
 package com.example.diplomaandroid;
 
+import java.io.File;
+
 public class Note {
-    int id;
-    String headline;
-    String body;
-    boolean hasDeadline;
-    String date;
-    String time;
+    private int id;
+    private String headline;
+    private String body;
+    private boolean hasDeadline;
+    private String date;
+    private String time;
+    static final String PATH_TO_FILES = "data/data/com.example.diplomaandroid/files";
 
     public Note(int id, String headline, String body, boolean hasDeadline, String date, String time) {
         this.id = id;
@@ -43,8 +46,7 @@ public class Note {
 
     public boolean isEmpty() {
         if (getHeadline().equals(""))
-            if (getBody().equals(""))
-                return !hasDeadline();
+            return getBody().equals("");
         return false;
     }
 }

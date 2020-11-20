@@ -18,21 +18,18 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class NotesActivity extends AppCompatActivity {
-    static HashMap<Integer, String> map;
-    static File[] files;
-    static File directory;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes);
-        directory = getFilesDir();
         try {
             init();
         } catch (IOException e) {
@@ -49,9 +46,7 @@ public class NotesActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        files = this.getFilesDir().listFiles();
-
-        map = new HashMap<>();
+        //map = new HashMap<>();
 
         ArrayList<Note> list = (ArrayList<Note>) App.getNoteRepository().getNotes();
 
@@ -62,7 +57,11 @@ public class NotesActivity extends AppCompatActivity {
         listView.setOnItemClickListener((adapterView, view, position, l) -> {
             Intent intent = new Intent(NotesActivity.this, CreateNoteActivity.class);
             AllSharedPreferences.NOTE_IN_QUEUE = position;
-            intent.putExtra(Integer.toString(AllSharedPreferences.NOTE_IN_QUEUE), map);
+            try {
+                App.getNoteRepository().putNoteInMap();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             startActivity(intent);
         });
 
@@ -70,10 +69,13 @@ public class NotesActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(NotesActivity.this);
             builder.setTitle(getResources().getString(R.string.delete_alert));
             builder.setPositiveButton(getResources().getString(R.string.yep), (dialogInterface, i) -> {
-                String fileName = map.get(position);
-                assert fileName != null;
-                File file = new File(getFilesDir(), fileName);
-                file.delete();
+                String fileName = FileNoteRepository.map.get(position);
+                int id = Integer.parseInt(fileName.substring(0, fileName.length() - 4));
+                try {
+                    App.getNoteRepository().deleteById(id);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
                 Toast.makeText(NotesActivity.this, getResources().getString(R.string.note_deleted_toast), Toast.LENGTH_SHORT).show();
                 try {
                     init();

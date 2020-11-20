@@ -55,78 +55,64 @@ public class CreateNoteActivity extends AppCompatActivity {
     private int id;
     static String idS;
 
-    static boolean isBeingFixed = false;
-    static File file;
-    static BufferedReader bufferedReader;
+    private boolean isBeingFixed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_note);
+
         isBeingFixed = false;
-        getNoteData();
-        init();
-    }
-
-    private void getNoteData() {
-        Random random = new Random();
-        id = random.nextInt();
-
         date = findViewById(R.id.date);
         time = findViewById(R.id.time);
         hasDeadlineCB = findViewById(R.id.has_deadline);
 
+        Random random = new Random();
+        id = random.nextInt();
+        try {
+            fillWithExistingData();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        init();
+    }
+
+    private void fillWithExistingData() throws IOException {
+
         Intent intentWithNoteData = this.getIntent();
-        bufferedReader = null;
         if (intentWithNoteData != null) {
+
             HashMap<Integer, String> map = (HashMap<Integer, String>) intentWithNoteData.getSerializableExtra(Integer.toString(AllSharedPreferences.NOTE_IN_QUEUE));
             if (map != null) {
-                idS = map.get(AllSharedPreferences.NOTE_IN_QUEUE);
-                assert idS != null;
-                id = Integer.parseInt(idS.substring(0, idS.length() - 4));
-                try {
-                    bufferedReader = new BufferedReader(new InputStreamReader(openFileInput(idS)));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-                if (bufferedReader != null) {
-                    isBeingFixed = true;
-
-                    getJsonInfo();
-
-                    if (hasDeadlineCB.isChecked()) {
-                        checkVisibility(hasDeadlineCB.isChecked());
-                    }
-                    try {
-                        bufferedReader.close();
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            } else {
-                idS = id + ".txt";
+                isBeingFixed = true;
+            idS = Objects.requireNonNull(map).get(AllSharedPreferences.NOTE_IN_QUEUE);
+            try {
+            id = Integer.parseInt(idS.substring(0, idS.length() - 4));} catch (Exception e) {
+                Toast.makeText(this, "а нефиг было с рутом играться, теперь переустанавливай всё", Toast.LENGTH_SHORT).show();
             }
-        }
-    }
 
-    private void getJsonInfo() {
-        JsonParser jsonParser = new JsonParser();
-        JsonObject noteJson = (JsonObject) jsonParser.parse(bufferedReader);
+            JsonParser jsonParser = new JsonParser();
+            BufferedReader bufferedReader = App.getNoteRepository().getBufferedReaderById(id);
+            JsonObject noteJson = (JsonObject) jsonParser.parse(bufferedReader);
 
-        EditText headline = findViewById(R.id.headline);
-        headline.setText(noteJson.get("headline").getAsString());
+            EditText headline = findViewById(R.id.headline);
+            headline.setText(noteJson.get("headline").getAsString());
 
-        EditText body = findViewById(R.id.note_body);
-        body.setText(noteJson.get("body").getAsString());
+            EditText body = findViewById(R.id.note_body);
+            body.setText(noteJson.get("body").getAsString());
 
-        hasDeadlineCB.setChecked(noteJson.get("hasDeadline").getAsBoolean());
+            if (hasDeadlineCB.isChecked())
+                checkVisibility(hasDeadlineCB.isChecked());
+            hasDeadlineCB.setChecked(noteJson.get("hasDeadline").getAsBoolean());
 
-        if (hasDeadlineCB.isChecked()) {
-            date.setText(noteJson.get("date").getAsString());
-            time.setText(noteJson.get("time").getAsString());
-        }
-    }
+            if (hasDeadlineCB.isChecked()) {
+                date.setText(noteJson.get("date").getAsString());
+                time.setText(noteJson.get("time").getAsString());
+            }
+            bufferedReader.close();}
+         else
+            idS = id + ".txt";
+    }}
 
     private void init() {
         createToolbar();
@@ -158,6 +144,7 @@ public class CreateNoteActivity extends AppCompatActivity {
         saveButton.setOnClickListener(view -> {
             try {
                 Note note = createNote();
+
                 if (App.getNoteRepository().saveNote(note)) {
                     if (!isBeingFixed)
                         Toast.makeText(this, getResources().getString(R.string.note_saved_toast), Toast.LENGTH_SHORT).show();
@@ -171,8 +158,6 @@ public class CreateNoteActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         });
-
-        file = new File(getFilesDir(), idS);
     }
 
     private void doIfNoteIsEmpty() {
@@ -257,7 +242,6 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (!isBeingFixed) {
             if (!createNote().isEmpty()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle(getResources().getString(R.string.not_saved_note_warning));
@@ -276,14 +260,5 @@ public class CreateNoteActivity extends AppCompatActivity {
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
             } else doIfNoteIsEmpty();
-        } else {
-            try {
-                App.getNoteRepository().saveNote(createNote());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Toast.makeText(this, getResources().getString(R.string.note_saved_toast), Toast.LENGTH_SHORT).show();
-            goToNotesActivity();
-        }
     }
 }
