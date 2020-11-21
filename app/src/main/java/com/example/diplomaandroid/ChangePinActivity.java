@@ -37,13 +37,14 @@ public class ChangePinActivity extends AppCompatActivity {
 
         EditText newPinET = findViewById(R.id.newPin);
         Button saveButton = findViewById(R.id.saveNewPinButton);
+        TextInputLayout passwordLayout = findViewById(R.id.password_layout);
         saveButton.setOnClickListener(view -> {
             String newPin = newPinET.getText().toString();
             if (!App.getPasswordRepository().saveNew(newPin)) {
-                TextInputLayout passwordLayout = findViewById(R.id.password_layout);
                 passwordLayout.setError(getResources().getString(R.string.new_password_error));
             } else {
-                PinActivity.isFirstTimePreferences.edit().putBoolean(AllSharedPreferences.FIRST_TIME, false).apply();
+                SharedPreferences isFirstTimePreferences = getSharedPreferences(AllSharedPreferences.FIRST_TIME_PREFS, MODE_PRIVATE);
+                isFirstTimePreferences.edit().putBoolean(AllSharedPreferences.FIRST_TIME, false).apply();
                 Toast.makeText(ChangePinActivity.this, getResources().getString(R.string.new_pin_saved), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ChangePinActivity.this, PinActivity.class);
                 startActivity(intent);

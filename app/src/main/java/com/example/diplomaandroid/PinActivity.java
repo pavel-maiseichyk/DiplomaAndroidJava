@@ -19,9 +19,6 @@ public class PinActivity extends AppCompatActivity {
 
     private String pin = "";
 
-    static SharedPreferences isFirstTimePreferences;
-    static SharedPreferences pinPreferences;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,8 +29,7 @@ public class PinActivity extends AppCompatActivity {
 
     private void init() {
         createToolbar();
-        pinPreferences = getSharedPreferences(AllSharedPreferences.PIN_PREFS, MODE_PRIVATE);
-        isFirstTimePreferences = getSharedPreferences(AllSharedPreferences.FIRST_TIME_PREFS, MODE_PRIVATE);
+        SharedPreferences isFirstTimePreferences = getSharedPreferences(AllSharedPreferences.FIRST_TIME_PREFS, MODE_PRIVATE);
         boolean isFirstTime = App.getPasswordRepository().hasPin();
 
         if (isFirstTime) {

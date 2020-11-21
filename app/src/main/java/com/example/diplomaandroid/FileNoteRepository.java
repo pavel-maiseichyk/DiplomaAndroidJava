@@ -111,7 +111,6 @@ public class FileNoteRepository implements NoteRepository {
         file.delete();
     }
 
-
     public HashMap<Integer, String> getMap() {
         return map;
     }
