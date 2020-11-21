@@ -85,34 +85,33 @@ public class CreateNoteActivity extends AppCompatActivity {
             HashMap<Integer, String> map = (HashMap<Integer, String>) intentWithNoteData.getSerializableExtra(idForIntent);
             if (map != null) {
                 isBeingFixed = true;
-            idS = Objects.requireNonNull(map).get(AllSharedPreferences.NOTE_IN_QUEUE);
-            try {
-            id = Integer.parseInt(idS.substring(0, idS.length() - 4));} catch (Exception e) {
-                Toast.makeText(this, "а нефиг было с рутом играться, теперь переустанавливай всё", Toast.LENGTH_SHORT).show();
-            }
+                idS = Objects.requireNonNull(map).get(AllSharedPreferences.NOTE_IN_QUEUE);
+                try {
+                    id = Integer.parseInt(idS.substring(0, idS.length() - 4));
+                } catch (Exception e) {
+                    Toast.makeText(this, "Вот нефиг было с рутом играться, теперь переустанавливай всё...", Toast.LENGTH_SHORT).show();
+                }
 
-            JsonParser jsonParser = new JsonParser();
-            BufferedReader bufferedReader = App.getNoteRepository().getBufferedReaderById(id);
-            JsonObject noteJson = (JsonObject) jsonParser.parse(bufferedReader);
+                JsonObject noteJson = JSONHelper.getJsonData(this, id + ".txt");
 
-            EditText headline = findViewById(R.id.headline);
-            headline.setText(noteJson.get("headline").getAsString());
+                EditText headline = findViewById(R.id.headline);
+                headline.setText(noteJson.get("headline").getAsString());
 
-            EditText body = findViewById(R.id.note_body);
-            body.setText(noteJson.get("body").getAsString());
+                EditText body = findViewById(R.id.note_body);
+                body.setText(noteJson.get("body").getAsString());
 
-            if (hasDeadlineCB.isChecked())
-                checkVisibility(hasDeadlineCB.isChecked());
-            hasDeadlineCB.setChecked(noteJson.get("hasDeadline").getAsBoolean());
+                if (hasDeadlineCB.isChecked())
+                    checkVisibility(hasDeadlineCB.isChecked());
+                hasDeadlineCB.setChecked(noteJson.get("hasDeadline").getAsBoolean());
 
-            if (hasDeadlineCB.isChecked()) {
-                date.setText(noteJson.get("date").getAsString());
-                time.setText(noteJson.get("time").getAsString());
-            }
-            bufferedReader.close();}
-         else
-            idS = id + ".txt";
-    }}
+                if (hasDeadlineCB.isChecked()) {
+                    date.setText(noteJson.get("date").getAsString());
+                    time.setText(noteJson.get("time").getAsString());
+                }
+            } else
+                idS = id + ".txt";
+        }
+    }
 
     private void init() {
         createToolbar();

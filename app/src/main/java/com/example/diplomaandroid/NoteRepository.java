@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.List;
 
 public interface NoteRepository {
-    BufferedReader getBufferedReaderById(int id);
 
     List<Note> getNotes() throws IOException;
 

@@ -40,16 +40,6 @@ public class FileNoteRepository implements NoteRepository {
         return instance;
     }
 
-    @Override
-    public BufferedReader getBufferedReaderById(int id) {
-        BufferedReader bufferedReader = null;
-        try {
-            bufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(id + ".txt")));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return bufferedReader;
-    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -64,10 +54,9 @@ public class FileNoteRepository implements NoteRepository {
 
             for (File noteFile : files) {
                 String noteName = noteFile.getName();
-                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(noteName)));
                 map.put(AllSharedPreferences.NOTE_IN_QUEUE, noteName);
-                JsonParser jsonParser = new JsonParser();
-                JsonObject noteJson = (JsonObject) jsonParser.parse(bufferedReader);
+
+                JsonObject noteJson = JSONHelper.getJsonData(context, noteName);
 
                 String headline = noteJson.get("headline").getAsString();
                 String body = noteJson.get("body").getAsString();
@@ -96,11 +85,7 @@ public class FileNoteRepository implements NoteRepository {
             deleteById(note.getId());
             return false;
         } else {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            String json = gson.toJson(note);
-            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(note.getId() + ".txt", Context.MODE_PRIVATE)));
-            bufferedWriter.append(json);
-            bufferedWriter.close();
+            JSONHelper.setJsonData(context, note);
             return true;
         }
     }
