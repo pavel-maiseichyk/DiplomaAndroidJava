@@ -13,6 +13,4 @@ public interface NoteRepository {
     boolean saveNote(Note note) throws IOException;
 
     void deleteById(int id) throws FileNotFoundException;
-
-    void putNoteInMap() throws IOException;
 }

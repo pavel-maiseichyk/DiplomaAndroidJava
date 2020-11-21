@@ -1,5 +1,6 @@
 package com.example.diplomaandroid;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
@@ -14,10 +15,9 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,15 +25,26 @@ import java.util.HashMap;
 import java.util.List;
 
 public class FileNoteRepository implements NoteRepository {
-
+    private static FileNoteRepository instance;
+    private Context context;
     private File file;
-    static HashMap<Integer, String> map = new HashMap<>();
+    private HashMap<Integer, String> map = new HashMap<>();
+
+    private FileNoteRepository(Context context) {
+        this.context = context;
+    }
+
+    public static FileNoteRepository getInstance(Context context) {
+        if (instance == null)
+            instance = new FileNoteRepository(context);
+        return instance;
+    }
 
     @Override
     public BufferedReader getBufferedReaderById(int id) {
         BufferedReader bufferedReader = null;
         try {
-            bufferedReader = new BufferedReader(new FileReader(new File(Note.PATH_TO_FILES, CreateNoteActivity.idS)));
+            bufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(id + ".txt")));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -46,14 +57,14 @@ public class FileNoteRepository implements NoteRepository {
         ArrayList<Note> list = new ArrayList<>();
         AllSharedPreferences.NOTE_IN_QUEUE = 0;
 
-        file = new File(Note.PATH_TO_FILES);
+        file = context.getFilesDir();
         File[] files = file.listFiles();
         if (files != null) {
             Arrays.sort(files, Comparator.comparingLong(File::lastModified).reversed());
 
             for (File noteFile : files) {
                 String noteName = noteFile.getName();
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(new File(Note.PATH_TO_FILES, noteName)));
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(noteName)));
                 map.put(AllSharedPreferences.NOTE_IN_QUEUE, noteName);
                 JsonParser jsonParser = new JsonParser();
                 JsonObject noteJson = (JsonObject) jsonParser.parse(bufferedReader);
@@ -87,9 +98,7 @@ public class FileNoteRepository implements NoteRepository {
         } else {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String json = gson.toJson(note);
-            BufferedWriter bufferedWriter;
-            file = new File(Note.PATH_TO_FILES, note.getId() + ".txt");
-            bufferedWriter = new BufferedWriter(new FileWriter(file));
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(context.openFileOutput(note.getId() + ".txt", Context.MODE_PRIVATE)));
             bufferedWriter.append(json);
             bufferedWriter.close();
             return true;
@@ -98,13 +107,12 @@ public class FileNoteRepository implements NoteRepository {
 
     @Override
     public void deleteById(int id) {
-        file = new File(Note.PATH_TO_FILES, id + ".txt");
+        file = new File(context.getFilesDir(), id + ".txt");
         file.delete();
     }
 
-    @Override
-    public void putNoteInMap() {
-        Intent intent = new Intent();
-        intent.putExtra(Integer.toString(AllSharedPreferences.NOTE_IN_QUEUE), map);
+
+    public HashMap<Integer, String> getMap() {
+        return map;
     }
 }

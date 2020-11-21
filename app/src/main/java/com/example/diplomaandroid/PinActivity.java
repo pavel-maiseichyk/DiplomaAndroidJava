@@ -47,18 +47,6 @@ public class PinActivity extends AppCompatActivity {
             }
         }
 
-        Button button1 = findViewById(R.id.button1);
-        Button button2 = findViewById(R.id.button2);
-        Button button3 = findViewById(R.id.button3);
-        Button button4 = findViewById(R.id.button4);
-        Button button5 = findViewById(R.id.button5);
-        Button button6 = findViewById(R.id.button6);
-        Button button7 = findViewById(R.id.button7);
-        Button button8 = findViewById(R.id.button8);
-        Button button9 = findViewById(R.id.button9);
-        Button buttonDelete = findViewById(R.id.buttonDelete);
-        Button button0 = findViewById(R.id.button0);
-
         wrongPasswordTV = findViewById(R.id.wrong_password_tv);
 
         View pinValue1 = findViewById(R.id.pinValue1);
@@ -66,118 +54,48 @@ public class PinActivity extends AppCompatActivity {
         View pinValue3 = findViewById(R.id.pinValue3);
         View pinValue4 = findViewById(R.id.pinValue4);
 
-        button1.setOnClickListener(view -> {
+        View.OnClickListener listener = v -> {
             if (pin.length() == 3) {
-                pin = pin + "1";
+                pin = pin + (String) v.getTag();
                 if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
                 else goToNotesActivity();
             } else {
                 pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                pin = pin + "1";
+                pin = pin + (String) v.getTag();
             }
-        });
+        };
+        Button button1 = findViewById(R.id.button1);
+        button1.setTag("1");
+        button1.setOnClickListener(listener);
+        Button button2 = findViewById(R.id.button2);
+        button2.setTag("2");
+                button2.setOnClickListener(listener);
+        Button button3 = findViewById(R.id.button3);
+        button3.setTag("3");
+        button3.setOnClickListener(listener);
+        Button button4 = findViewById(R.id.button4);
+        button4.setTag("4");
+                button4.setOnClickListener(listener);
+        Button button5 = findViewById(R.id.button5);
+        button5.setTag("5");
+        button5.setOnClickListener(listener);
+        Button button6 = findViewById(R.id.button6);
+        button6.setTag("6");
+                button6.setOnClickListener(listener);
+        Button button7 = findViewById(R.id.button7);
+        button7.setTag("7");
+        button7.setOnClickListener(listener);
+        Button button8 = findViewById(R.id.button8);
+        button8.setTag("8");
+                button8.setOnClickListener(listener);
+        Button button9 = findViewById(R.id.button9);
+        button9.setTag("9");
+        button9.setOnClickListener(listener);
+        Button button0 = findViewById(R.id.button0);
+        button0.setTag("0");
+                button0.setOnClickListener(listener);
 
-        button2.setOnClickListener(view -> {
-            if (pin.length() == 3) {
-                pin = pin + "2";
-                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
-                else goToNotesActivity();
-                ;
-            } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                pin = pin + "2";
-            }
-        });
-
-        button3.setOnClickListener(view -> {
-            if (pin.length() == 3) {
-                pin = pin + "3";
-                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
-                else goToNotesActivity();
-            } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                pin = pin + "3";
-            }
-        });
-
-        button4.setOnClickListener(view -> {
-            if (pin.length() == 3) {
-                pin = pin + "4";
-                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
-                else goToNotesActivity();
-            } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                pin = pin + "4";
-            }
-        });
-
-        button5.setOnClickListener(view -> {
-            if (pin.length() == 3) {
-                pin = pin + "5";
-                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
-                else goToNotesActivity();
-            } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                pin = pin + "5";
-            }
-        });
-
-        button6.setOnClickListener(view -> {
-            if (pin.length() == 3) {
-                pin = pin + "6";
-                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
-                else goToNotesActivity();
-            } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                pin = pin + "6";
-            }
-        });
-
-        button7.setOnClickListener(view -> {
-            if (pin.length() == 3) {
-                pin = pin + "7";
-                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
-                else goToNotesActivity();
-            } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                pin = pin + "7";
-            }
-        });
-
-        button8.setOnClickListener(view -> {
-            if (pin.length() == 3) {
-                pin = pin + "8";
-                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
-                else goToNotesActivity();
-            } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                pin = pin + "8";
-            }
-        });
-
-        button9.setOnClickListener(view -> {
-            if (pin.length() == 3) {
-                pin = pin + "9";
-                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
-                else goToNotesActivity();
-            } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                pin = pin + "9";
-            }
-        });
-
-        button0.setOnClickListener(view -> {
-            if (pin.length() == 3) {
-                pin = pin + "0";
-                pinViews[pin.length()-1].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
-                else goToNotesActivity();
-            } else {
-                pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                pin = pin + "0";
-            }
-        });
-
+        Button buttonDelete = findViewById(R.id.buttonDelete);
         buttonDelete.setOnClickListener(view -> {
             if (pin.length() != 0) {
                 pin = pin.substring(0, pin.length() - 1);

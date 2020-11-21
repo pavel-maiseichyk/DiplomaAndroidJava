@@ -78,11 +78,11 @@ public class CreateNoteActivity extends AppCompatActivity {
     }
 
     private void fillWithExistingData() throws IOException {
-
         Intent intentWithNoteData = this.getIntent();
         if (intentWithNoteData != null) {
 
-            HashMap<Integer, String> map = (HashMap<Integer, String>) intentWithNoteData.getSerializableExtra(Integer.toString(AllSharedPreferences.NOTE_IN_QUEUE));
+            String idForIntent = Integer.toString(AllSharedPreferences.NOTE_IN_QUEUE);
+            HashMap<Integer, String> map = (HashMap<Integer, String>) intentWithNoteData.getSerializableExtra(idForIntent);
             if (map != null) {
                 isBeingFixed = true;
             idS = Objects.requireNonNull(map).get(AllSharedPreferences.NOTE_IN_QUEUE);

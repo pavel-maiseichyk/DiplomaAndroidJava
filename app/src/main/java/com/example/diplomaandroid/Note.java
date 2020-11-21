@@ -9,7 +9,6 @@ public class Note {
     private boolean hasDeadline;
     private String date;
     private String time;
-    static final String PATH_TO_FILES = "data/data/com.example.diplomaandroid/files";
 
     public Note(int id, String headline, String body, boolean hasDeadline, String date, String time) {
         this.id = id;

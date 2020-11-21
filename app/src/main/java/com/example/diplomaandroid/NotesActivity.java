@@ -46,7 +46,7 @@ public class NotesActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        //map = new HashMap<>();
+        HashMap<Integer, String> map = FileNoteRepository.getInstance(this).getMap();
 
         ArrayList<Note> list = (ArrayList<Note>) App.getNoteRepository().getNotes();
 
@@ -57,11 +57,7 @@ public class NotesActivity extends AppCompatActivity {
         listView.setOnItemClickListener((adapterView, view, position, l) -> {
             Intent intent = new Intent(NotesActivity.this, CreateNoteActivity.class);
             AllSharedPreferences.NOTE_IN_QUEUE = position;
-            try {
-                App.getNoteRepository().putNoteInMap();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+                intent.putExtra(Integer.toString(AllSharedPreferences.NOTE_IN_QUEUE), map);
             startActivity(intent);
         });
 
@@ -69,7 +65,7 @@ public class NotesActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(NotesActivity.this);
             builder.setTitle(getResources().getString(R.string.delete_alert));
             builder.setPositiveButton(getResources().getString(R.string.yep), (dialogInterface, i) -> {
-                String fileName = FileNoteRepository.map.get(position);
+                String fileName = map.get(position);
                 int id = Integer.parseInt(fileName.substring(0, fileName.length() - 4));
                 try {
                     App.getNoteRepository().deleteById(id);

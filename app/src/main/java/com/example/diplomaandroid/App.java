@@ -1,6 +1,7 @@
 package com.example.diplomaandroid;
 
 import android.app.Application;
+import android.content.Context;
 
 public class App extends Application {
     private static NoteRepository noteRepository;
@@ -10,7 +11,8 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
 
-        noteRepository = new FileNoteRepository();
+        noteRepository =  FileNoteRepository.getInstance(this);
+
         passwordRepository = new SimpleKeystore();
     }
 
