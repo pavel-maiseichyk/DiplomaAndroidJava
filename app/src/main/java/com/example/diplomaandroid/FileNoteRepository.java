@@ -1,26 +1,16 @@
 package com.example.diplomaandroid;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Build;
 
-import androidx.annotation.RequiresApi;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Comparator;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,8 +30,6 @@ public class FileNoteRepository implements NoteRepository {
         return instance;
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public List<Note> getNotes() throws IOException {
         ArrayList<Note> list = new ArrayList<>();
@@ -50,7 +38,7 @@ public class FileNoteRepository implements NoteRepository {
         file = context.getFilesDir();
         File[] files = file.listFiles();
         if (files != null) {
-            Arrays.sort(files, Comparator.comparingLong(File::lastModified).reversed());
+            Arrays.sort(files, (o1, o2) -> Long.compare(o2.lastModified(), o1.lastModified()));
 
             for (File noteFile : files) {
                 String noteName = noteFile.getName();

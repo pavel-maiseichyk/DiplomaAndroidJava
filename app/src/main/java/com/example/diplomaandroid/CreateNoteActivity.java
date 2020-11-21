@@ -41,7 +41,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -53,8 +55,6 @@ public class CreateNoteActivity extends AppCompatActivity {
     private CheckBox hasDeadlineCB;
 
     private int id;
-    static String idS;
-
     private boolean isBeingFixed;
 
     @Override
@@ -62,36 +62,44 @@ public class CreateNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_note);
 
-        isBeingFixed = false;
-        date = findViewById(R.id.date);
-        time = findViewById(R.id.time);
-        hasDeadlineCB = findViewById(R.id.has_deadline);
-
-        Random random = new Random();
-        id = random.nextInt();
+        initID();
         try {
             fillWithExistingData();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        init();
+        initAfterReceivingData();
+    }
+
+    private void initID() {
+        Random random = new Random();
+        id = random.nextInt();
+        String idS = id + ".txt";
+
+        File file = getFilesDir();
+        File[] files = file.listFiles();
+        for (File noteFile : Objects.requireNonNull(files)) {
+            if (noteFile.getName().equals(idS)) initID();
+        }
     }
 
     private void fillWithExistingData() throws IOException {
+        isBeingFixed = false;
+        date = findViewById(R.id.date);
+        time = findViewById(R.id.time);
+        hasDeadlineCB = findViewById(R.id.has_deadline);
+
         Intent intentWithNoteData = this.getIntent();
         if (intentWithNoteData != null) {
-
-            String idForIntent = Integer.toString(AllSharedPreferences.NOTE_IN_QUEUE);
-            HashMap<Integer, String> map = (HashMap<Integer, String>) intentWithNoteData.getSerializableExtra(idForIntent);
+            HashMap<Integer, String> map = (HashMap<Integer, String>) intentWithNoteData.getSerializableExtra("map");
             if (map != null) {
                 isBeingFixed = true;
-                idS = Objects.requireNonNull(map).get(AllSharedPreferences.NOTE_IN_QUEUE);
+                String idS = Objects.requireNonNull(map).get(AllSharedPreferences.NOTE_IN_QUEUE);
                 try {
                     id = Integer.parseInt(idS.substring(0, idS.length() - 4));
                 } catch (Exception e) {
                     Toast.makeText(this, "Вот нефиг было с рутом играться, теперь переустанавливай всё...", Toast.LENGTH_SHORT).show();
                 }
-
                 JsonObject noteJson = JSONHelper.getJsonData(this, id + ".txt");
 
                 EditText headline = findViewById(R.id.headline);
@@ -108,12 +116,11 @@ public class CreateNoteActivity extends AppCompatActivity {
                     date.setText(noteJson.get("date").getAsString());
                     time.setText(noteJson.get("time").getAsString());
                 }
-            } else
-                idS = id + ".txt";
+            }
         }
     }
 
-    private void init() {
+    private void initAfterReceivingData() {
         createToolbar();
 
         Calendar calendar = Calendar.getInstance();
@@ -241,23 +248,23 @@ public class CreateNoteActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-            if (!createNote().isEmpty()) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setTitle(getResources().getString(R.string.not_saved_note_warning));
-                builder.setPositiveButton(getResources().getString(R.string.yep), (dialogInterface, i) -> {
-                    try {
-                        App.getNoteRepository().saveNote(createNote());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    goToNotesActivity();
-                });
+        if (!createNote().isEmpty()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(getResources().getString(R.string.not_saved_note_warning));
+            builder.setPositiveButton(getResources().getString(R.string.yep), (dialogInterface, i) -> {
+                try {
+                    App.getNoteRepository().saveNote(createNote());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                goToNotesActivity();
+            });
 
-                builder.setNegativeButton(getResources().getString(R.string.nope), (dialogInterface, i) -> {
-                    goToNotesActivity();
-                });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
-            } else doIfNoteIsEmpty();
+            builder.setNegativeButton(getResources().getString(R.string.nope), (dialogInterface, i) -> {
+                goToNotesActivity();
+            });
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+        } else doIfNoteIsEmpty();
     }
 }

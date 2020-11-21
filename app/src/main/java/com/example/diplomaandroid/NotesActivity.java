@@ -1,13 +1,11 @@
 package com.example.diplomaandroid;
 
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -24,7 +22,6 @@ import java.util.HashMap;
 
 public class NotesActivity extends AppCompatActivity {
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +33,6 @@ public class NotesActivity extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void init() throws IOException {
         createToolbar();
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -56,7 +52,7 @@ public class NotesActivity extends AppCompatActivity {
         listView.setOnItemClickListener((adapterView, view, position, l) -> {
             Intent intent = new Intent(NotesActivity.this, CreateNoteActivity.class);
             AllSharedPreferences.NOTE_IN_QUEUE = position;
-                intent.putExtra(Integer.toString(AllSharedPreferences.NOTE_IN_QUEUE), map);
+            intent.putExtra("map", map);
             startActivity(intent);
         });
 

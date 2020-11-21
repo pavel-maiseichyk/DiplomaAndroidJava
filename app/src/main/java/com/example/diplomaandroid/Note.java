@@ -1,7 +1,5 @@
 package com.example.diplomaandroid;
 
-import java.io.File;
-
 public class Note {
     private int id;
     private String headline;
@@ -9,7 +7,6 @@ public class Note {
     private boolean hasDeadline;
     private String date;
     private String time;
-    private int position;
 
     public Note(int id, String headline, String body, boolean hasDeadline, String date, String time) {
         this.id = id;
@@ -48,13 +45,5 @@ public class Note {
         if (getHeadline().equals(""))
             return getBody().equals("");
         return false;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
     }
 }

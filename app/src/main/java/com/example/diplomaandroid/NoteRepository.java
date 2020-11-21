@@ -1,6 +1,5 @@
 package com.example.diplomaandroid;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;

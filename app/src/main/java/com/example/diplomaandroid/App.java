@@ -9,9 +9,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        noteRepository =  FileNoteRepository.getInstance(this);
-
+        noteRepository = FileNoteRepository.getInstance(this);
         passwordRepository = SimpleKeystore.getInstance(this);
     }
 

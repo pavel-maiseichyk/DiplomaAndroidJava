@@ -52,12 +52,12 @@ public class PinActivity extends AppCompatActivity {
 
         View.OnClickListener listener = v -> {
             if (pin.length() == 3) {
-                pin = pin + (String) v.getTag();
+                pin = pin + v.getTag();
                 if (!App.getPasswordRepository().checkPin(pin)) actIfPasswordIsWrong();
                 else goToNotesActivity();
             } else {
                 pinViews[pin.length()].setBackgroundColor(getResources().getColor(R.color.colorPrimary));
-                pin = pin + (String) v.getTag();
+                pin = pin + v.getTag();
             }
         };
         Button button1 = findViewById(R.id.button1);
@@ -65,31 +65,31 @@ public class PinActivity extends AppCompatActivity {
         button1.setOnClickListener(listener);
         Button button2 = findViewById(R.id.button2);
         button2.setTag("2");
-                button2.setOnClickListener(listener);
+        button2.setOnClickListener(listener);
         Button button3 = findViewById(R.id.button3);
         button3.setTag("3");
         button3.setOnClickListener(listener);
         Button button4 = findViewById(R.id.button4);
         button4.setTag("4");
-                button4.setOnClickListener(listener);
+        button4.setOnClickListener(listener);
         Button button5 = findViewById(R.id.button5);
         button5.setTag("5");
         button5.setOnClickListener(listener);
         Button button6 = findViewById(R.id.button6);
         button6.setTag("6");
-                button6.setOnClickListener(listener);
+        button6.setOnClickListener(listener);
         Button button7 = findViewById(R.id.button7);
         button7.setTag("7");
         button7.setOnClickListener(listener);
         Button button8 = findViewById(R.id.button8);
         button8.setTag("8");
-                button8.setOnClickListener(listener);
+        button8.setOnClickListener(listener);
         Button button9 = findViewById(R.id.button9);
         button9.setTag("9");
         button9.setOnClickListener(listener);
         Button button0 = findViewById(R.id.button0);
         button0.setTag("0");
-                button0.setOnClickListener(listener);
+        button0.setOnClickListener(listener);
 
         Button buttonDelete = findViewById(R.id.buttonDelete);
         buttonDelete.setOnClickListener(view -> {
