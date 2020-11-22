@@ -51,7 +51,7 @@ public class NotesActivity extends AppCompatActivity {
 
         listView.setOnItemClickListener((adapterView, view, position, l) -> {
             Intent intent = new Intent(NotesActivity.this, CreateNoteActivity.class);
-            AllSharedPreferences.NOTE_IN_QUEUE = position;
+            intent.putExtra("position", position);
             intent.putExtra("map", map);
             startActivity(intent);
         });

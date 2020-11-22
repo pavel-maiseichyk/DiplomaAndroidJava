@@ -33,7 +33,7 @@ public class FileNoteRepository implements NoteRepository {
     @Override
     public List<Note> getNotes() throws IOException {
         ArrayList<Note> list = new ArrayList<>();
-        AllSharedPreferences.NOTE_IN_QUEUE = 0;
+        int position = 0;
 
         file = context.getFilesDir();
         File[] files = file.listFiles();
@@ -42,7 +42,7 @@ public class FileNoteRepository implements NoteRepository {
 
             for (File noteFile : files) {
                 String noteName = noteFile.getName();
-                map.put(AllSharedPreferences.NOTE_IN_QUEUE, noteName);
+                map.put(position, noteName);
 
                 JsonObject noteJson = JSONHelper.getJsonData(context, noteName);
 
@@ -60,8 +60,7 @@ public class FileNoteRepository implements NoteRepository {
                 Note note = new Note(id, headline, body, hasDeadline, date, time);
 
                 list.add(note);
-
-                AllSharedPreferences.NOTE_IN_QUEUE++;
+                position++;
             }
         }
         return list;

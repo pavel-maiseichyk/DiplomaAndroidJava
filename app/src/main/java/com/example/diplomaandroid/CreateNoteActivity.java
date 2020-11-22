@@ -94,7 +94,8 @@ public class CreateNoteActivity extends AppCompatActivity {
             HashMap<Integer, String> map = (HashMap<Integer, String>) intentWithNoteData.getSerializableExtra("map");
             if (map != null) {
                 isBeingFixed = true;
-                String idS = Objects.requireNonNull(map).get(AllSharedPreferences.NOTE_IN_QUEUE);
+                int position = intentWithNoteData.getIntExtra("position", -1);
+                String idS = Objects.requireNonNull(map).get(position);
                 try {
                     id = Integer.parseInt(idS.substring(0, idS.length() - 4));
                 } catch (Exception e) {
